@@ -56,9 +56,14 @@ premium design, ICAI-sober tone (no client names, testimonials, or promotional c
   NOT git-connected — every site update needs `./deploy.sh` after committing.
   Live and verified: https://shantived.pages.dev (title + assets checked; internal
   files confirmed not uploaded — unknown paths serve index.html fallback, no leak).
-- **Next:** registry watcher running for nameserver propagation (wren/damian
-  .ns.cloudflare.com set at name.com 2026-08-23) → once zone is active, attach
-  custom domain `shantived.consulting` to the Pages project + www redirect.
+- **LIVE on custom domain (2026-08-23):** https://shantived.consulting and
+  https://www.shantived.consulting both HTTP 200, http→https 301 works. Zone active
+  on Cloudflare (nameservers wren/damian propagated). DNS: two proxied CNAMEs
+  (apex + www → shantived.pages.dev), created by the user in the dashboard after
+  deleting auto-imported parking A records (91.195.240.94 = name.com parking).
+  Note: wrangler's OAuth token has zone:read but NOT dns_records:write — DNS edits
+  need the dashboard (or a scoped API token). Fresh wrangler auth lives at
+  `~/.wrangler/config/default.toml` (the ~/Library/Preferences copy is stale).
 - Canonical URL, og:url, JSON-LD url, robots.txt and sitemap.xml added 2026-08-23.
 - Git repo initialized (branch `main`), initial commit made 2026-08-23.
 
