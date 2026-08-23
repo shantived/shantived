@@ -32,7 +32,21 @@ premium design, ICAI-sober tone (no client names, testimonials, or promotional c
 
 - **Instagram link:** user will supply later; no Instagram icon on the site until then.
 - **Ved Prakash Sujaka bio:** drafted generically by Claude (no details supplied) — needs user review.
-- Domain and hosting: not discussed yet.
+- **Partner photos:** user will supply; apply duotone treatment when they arrive.
+- **Cinematic UI upgrade:** user wants a beyond-best cinematic feel (crafted generative
+  background, monogram intro, text-mask reveals, parallax — NO stock video). Claude
+  proposed the crafted route; awaiting explicit go-ahead.
+- **Requirements message:** an English draft asking the client for photos, Ved's bio,
+  Instagram, FRN/LLPIN, and founding year was given to the user to forward.
+
+## Domain & deployment
+
+- **Domain (locked):** `shantived.consulting`, purchased at name.com (2026-08-23).
+- **Plan:** GitHub (SSH, account `chamanswami555`, key `~/.ssh/scrapeverse_ed25519`
+  via `~/.ssh/config`) → Cloudflare Pages (connect-to-git, no build step, output `/`)
+  → move DNS to Cloudflare nameservers at name.com → custom domain + auto SSL.
+- Canonical URL, og:url, JSON-LD url, robots.txt and sitemap.xml added 2026-08-23.
+- Git repo initialized (branch `main`), initial commit made 2026-08-23.
 
 ## Structure
 
