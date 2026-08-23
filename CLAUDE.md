@@ -41,6 +41,10 @@ premium design, ICAI-sober tone (no client names, testimonials, or promotional c
 
 ## Domain & deployment
 
+- **Note:** after ~2026-10-22 (60-day ICANN lock ends) the domain CAN optionally be
+  transferred from name.com to Cloudflare Registrar for cheaper renewals. Not needed
+  for going live — "Connect a domain" (DNS on Cloudflare) is the chosen route.
+
 - **Domain (locked):** `shantived.consulting`, purchased at name.com (2026-08-23).
 - **GitHub:** account `shantived`, repo `shantived/shantived` (private), pushed
   2026-08-23. Dedicated key `~/.ssh/shantived_ed25519`, ssh host alias
