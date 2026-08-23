@@ -50,8 +50,15 @@ premium design, ICAI-sober tone (no client names, testimonials, or promotional c
   2026-08-23. Dedicated key `~/.ssh/shantived_ed25519`, ssh host alias
   `github-shantived` — this project must not reuse other projects' keys/accounts
   (user rule: work only from this chat and this folder).
-- **Next:** Cloudflare Pages (connect-to-git, no build step, output `/`) → move DNS
-  to Cloudflare nameservers at name.com → custom domain + auto SSL.
+- **Cloudflare:** account `shantivedllp@gmail.com` (project-dedicated), wrangler
+  OAuth login done 2026-08-23. Pages project `shantived` deployed via DIRECT UPLOAD
+  (`./deploy.sh` builds dist/ with public files only and runs `wrangler pages deploy`).
+  NOT git-connected — every site update needs `./deploy.sh` after committing.
+  Live and verified: https://shantived.pages.dev (title + assets checked; internal
+  files confirmed not uploaded — unknown paths serve index.html fallback, no leak).
+- **Next:** registry watcher running for nameserver propagation (wren/damian
+  .ns.cloudflare.com set at name.com 2026-08-23) → once zone is active, attach
+  custom domain `shantived.consulting` to the Pages project + www redirect.
 - Canonical URL, og:url, JSON-LD url, robots.txt and sitemap.xml added 2026-08-23.
 - Git repo initialized (branch `main`), initial commit made 2026-08-23.
 
