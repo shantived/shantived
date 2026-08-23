@@ -42,9 +42,12 @@ premium design, ICAI-sober tone (no client names, testimonials, or promotional c
 ## Domain & deployment
 
 - **Domain (locked):** `shantived.consulting`, purchased at name.com (2026-08-23).
-- **Plan:** GitHub (SSH, account `chamanswami555`, key `~/.ssh/scrapeverse_ed25519`
-  via `~/.ssh/config`) → Cloudflare Pages (connect-to-git, no build step, output `/`)
-  → move DNS to Cloudflare nameservers at name.com → custom domain + auto SSL.
+- **GitHub:** account `shantived`, repo `shantived/shantived` (private), pushed
+  2026-08-23. Dedicated key `~/.ssh/shantived_ed25519`, ssh host alias
+  `github-shantived` — this project must not reuse other projects' keys/accounts
+  (user rule: work only from this chat and this folder).
+- **Next:** Cloudflare Pages (connect-to-git, no build step, output `/`) → move DNS
+  to Cloudflare nameservers at name.com → custom domain + auto SSL.
 - Canonical URL, og:url, JSON-LD url, robots.txt and sitemap.xml added 2026-08-23.
 - Git repo initialized (branch `main`), initial commit made 2026-08-23.
 
