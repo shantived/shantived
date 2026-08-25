@@ -207,33 +207,24 @@ h1 em {
   min-width: 0;
 }
 
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
+/* Official CA India logo (ICAI): used unaltered, scaled proportionally,
+   always on a white or near-white surface. */
+.brand-logo {
+  display: block;
+  height: 48px;
+  width: auto;
   flex: none;
-  border-radius: 11px;
-  background: var(--ink-deep);
-  color: #f5f3ec;
-  font-family: var(--serif);
-  font-weight: 600;
-  font-size: 1.05rem;
-  letter-spacing: 0.01em;
-  position: relative;
-  overflow: hidden;
 }
-.brand-mark::after {
-  content: '';
-  position: absolute;
-  right: -6px;
-  bottom: -6px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--accent);
-  opacity: 0.9;
+.brand-logo-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  background: #ffffff;
+  border-radius: 10px;
+  flex: none;
 }
+.brand-logo-footer { height: 40px; }
 
 .brand-name { line-height: 1.25; min-width: 0; }
 .brand-title {
@@ -685,10 +676,6 @@ h1 em {
   gap: 0.9rem;
   margin-right: auto;
 }
-.brand-mark-footer {
-  background: rgba(245, 243, 236, 0.1);
-  border: 1px solid rgba(245, 243, 236, 0.2);
-}
 .footer-name {
   font-family: var(--serif);
   font-weight: 600;
@@ -753,7 +740,7 @@ h1 em {
   .contact-row { grid-template-columns: 1fr; gap: 0.4rem; }
   .brand-sub { display: none; }
   .brand-title { font-size: 0.92rem; }
-  .brand-mark { width: 38px; height: 38px; font-size: 0.95rem; }
+  .brand-logo { height: 40px; }
   .scroll-cue { display: none; }
 }
 

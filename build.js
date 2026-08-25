@@ -10,7 +10,8 @@
  *   /sitemap.xml             sitemap (also refreshed at the repo root)
  *   assets/og/<slug>.png     branded Open Graph preview image per post
  *                            (rendered once with a local Chromium browser,
- *                            then committed; skipped when no browser exists)
+ *                            then committed; skipped when no browser exists;
+ *                            set OG_REFRESH=1 to re-render existing images)
  *
  * Post front matter (posts/YYYY-MM-DD-slug.md):
  *   title, description, date (YYYY-MM-DD)  required
@@ -31,7 +32,7 @@ const DIST = path.join(ROOT, 'dist');
 const POSTS_DIR = path.join(ROOT, 'posts');
 const TEMPLATES = path.join(ROOT, 'templates');
 const OG_DIR = path.join(ROOT, 'assets', 'og');
-const STATIC_FILES = ['index.html', 'favicon.svg', 'robots.txt'];
+const STATIC_FILES = ['index.html', 'robots.txt'];
 const STATIC_DIRS = ['css', 'js', 'assets'];
 const BROWSERS = [
   '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
@@ -141,7 +142,7 @@ function titleSize(title) {
 // Renders assets/og/<name>.png once; later builds reuse the committed file.
 function ensureOgImage(name, title, kicker, browser, ogTemplate, warnings) {
   const out = path.join(OG_DIR, `${name}.png`);
-  if (fs.existsSync(out)) return true;
+  if (fs.existsSync(out) && process.env.OG_REFRESH !== '1') return true;
   if (!browser) {
     warnings.push(`no Chromium-based browser found: OG image for "${name}" not generated`);
     return false;
@@ -151,6 +152,7 @@ function ensureOgImage(name, title, kicker, browser, ogTemplate, warnings) {
   const page = path.join(workDir, `${name}.html`);
   fs.writeFileSync(page, render(ogTemplate, {
     title, kicker, titleSize: titleSize(title), fontsDir: path.join(ROOT, 'assets', 'fonts'),
+    logoPath: path.join(ROOT, 'assets', 'logo', 'ca-india-logo.png'),
   }));
   fs.mkdirSync(OG_DIR, { recursive: true });
   execFileSync(browser, [

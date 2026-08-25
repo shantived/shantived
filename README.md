@@ -64,9 +64,14 @@ feed (`/feed.xml`) and the sitemap.
 | `js/main.js`     | Scrollspy, reveal-on-scroll, header state, menu, share bar   |
 | `assets/fonts/`  | Self-hosted woff2 fonts (Fraunces, Manrope)                  |
 | `assets/og/`     | Generated link-preview images (committed)                    |
-| `favicon.svg`    | SV monogram favicon                                          |
+| `assets/logo/`   | Official CA India logo (web PNG) and favicon set             |
+| `brand/`         | Logo source files (AI/EPS/PDF) and ICAI logo manual, not built |
 | `deploy.sh`      | Build and deploy to Cloudflare Pages                         |
 | `dist/`          | Build output (ignored by git)                                |
+
+Branding: the CA India logo is ICAI's official mark for members. It must be
+used unaltered, scaled proportionally, on a white or near-white surface (the
+footer uses a white tile). See `brand/README.md`.
 
 Accessibility: semantic landmarks, skip links, visible focus states, and
 full `prefers-reduced-motion` support. Pages work with JavaScript disabled.

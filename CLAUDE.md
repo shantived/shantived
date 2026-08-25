@@ -78,7 +78,9 @@ css/styles.css      design system (tokens, layout, animations, insights/post/sha
 js/main.js          scrollspy, reveal-on-scroll, header state, mobile menu, share bar
 assets/fonts/       self-hosted woff2 (Fraunces 600, Fraunces italic 500, Manrope variable)
 assets/og/          generated 1200x630 link-preview PNGs (committed; built once per post)
-favicon.svg         SV monogram
+assets/logo/        official CA India logo PNG + favicon set (32/180/192/512, white-padded)
+brand/              logo source files (AI/EPS/PDF) + ICAI logo manual; NOT copied to dist
+favicon.svg         OLD SV monogram, unreferenced since 2026-08-25 (delete only with user's ok)
 deploy.sh           npm install (if needed) + npm run build + wrangler pages deploy dist
 dist/               build output, gitignored, the only thing that is uploaded
 ```
@@ -123,3 +125,12 @@ python3 -m http.server 8080 --directory dist
   "Latest from the practice" strip. Em-dash ban (user rule from 2026-08-20)
   applied: all project files swept to zero em dashes. Stack note: the browser
   still gets zero frameworks; Node + marked are build-time only.
+- 2026-08-25 - SV monogram replaced by the official ICAI "CA India" logo (user
+  request: "CA wala logo double right ke sign wala"). Files came from ICAI's own
+  download (icai.org/post/2167, archive caindia-logo-download.rar); the manual is
+  in brand/. Rules applied from the manual: logo unaltered, proportional scaling
+  only, white background (footer uses a white tile, OG images use a white tile),
+  no rotation/crop. Colours: blue #145886, orange #F37920, green #55B848. The new
+  logo is effective 24 Nov 2023 with a one-year transition, so the client's
+  visiting card still carries the OLD logo; told the user. OG images re-rendered
+  (OG_REFRESH=1). Favicons are PNG now; favicon.svg is unused, pending deletion.
