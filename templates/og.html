@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  @font-face { font-family: 'Fraunces'; font-weight: 600; src: url('file://{{fontsDir}}/fraunces-600.woff2') format('woff2'); }
+  @font-face { font-family: 'Manrope'; font-weight: 200 800; src: url('file://{{fontsDir}}/manrope-var.woff2') format('woff2'); }
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body { position: relative; background: #faf9f6; color: #0d1430; font-family: 'Manrope', sans-serif; -webkit-font-smoothing: antialiased; }
+  .wash { position: absolute; inset: 0; background: radial-gradient(900px 500px at 90% -10%, rgba(46,49,146,.08), transparent 60%), radial-gradient(700px 400px at -10% 110%, rgba(14,143,96,.07), transparent 60%); }
+  .ring { position: absolute; border-radius: 50%; border: 1px solid rgba(19,28,58,.10); }
+  .ring-1 { width: 760px; height: 760px; right: -220px; top: -200px; }
+  .ring-2 { width: 600px; height: 600px; right: -140px; top: -120px; }
+  .ring-3 { width: 440px; height: 440px; right: -60px; top: -40px; }
+  .arc { position: absolute; width: 760px; height: 760px; right: -220px; top: -200px; border-radius: 50%; border: 3px solid transparent; border-top-color: #0e8f60; transform: rotate(35deg); }
+  .wrap { position: absolute; inset: 0; padding: 72px 84px 64px; display: flex; flex-direction: column; justify-content: space-between; }
+  .kicker { margin: 0; display: flex; align-items: center; gap: 16px; font-size: 21px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: #0b7350; }
+  .kicker::before { content: ''; width: 48px; height: 2px; background: #0e8f60; }
+  h1 { margin: 0; max-width: 920px; font-family: 'Fraunces', serif; font-weight: 600; font-size: {{titleSize}}px; line-height: 1.1; letter-spacing: -0.01em; color: #0d1430; }
+  .brand { display: flex; align-items: center; gap: 22px; }
+  .mark { position: relative; overflow: hidden; width: 66px; height: 66px; border-radius: 17px; background: #0d1430; color: #f5f3ec; font-family: 'Fraunces', serif; font-weight: 600; font-size: 27px; display: grid; place-items: center; }
+  .mark::after { content: ''; position: absolute; right: -10px; bottom: -10px; width: 26px; height: 26px; border-radius: 50%; background: #0e8f60; }
+  .name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 28px; color: #0d1430; }
+  .sub { margin-top: 4px; font-size: 15px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: #0b7350; }
+</style>
+</head>
+<body>
+  <div class="wash"></div>
+  <div class="ring ring-1"></div><div class="ring ring-2"></div><div class="ring ring-3"></div><div class="arc"></div>
+  <div class="wrap">
+    <p class="kicker">{{kicker}}</p>
+    <h1>{{title}}</h1>
+    <div class="brand">
+      <div class="mark">SV</div>
+      <div><div class="name">Shanti Ved &amp; Associates LLP</div><div class="sub">Chartered Accountants · Jaipur</div></div>
+    </div>
+  </div>
+</body>
+</html>

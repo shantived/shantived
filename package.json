@@ -1,0 +1,12 @@
+{
+  "name": "shantived",
+  "private": true,
+  "description": "Website for Shanti Ved & Associates LLP: static build of the homepage and Insights posts",
+  "scripts": {
+    "build": "node build.js",
+    "deploy": "./deploy.sh"
+  },
+  "devDependencies": {
+    "marked": "^18.0.11"
+  }
+}

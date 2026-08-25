@@ -1,4 +1,4 @@
-/* Shanti Ved & Associates LLP — interactions.
+/* Shanti Ved & Associates LLP: interactions.
    Vanilla JS only; every behavior degrades gracefully without it. */
 
 (function () {
@@ -52,7 +52,10 @@
 
   /* Scrollspy: highlight the nav link of the section in view */
   var sections = navLinks
-    .map(function (link) { return document.querySelector(link.getAttribute('href')); })
+    .map(function (link) {
+      var href = link.getAttribute('href');
+      return href.charAt(0) === '#' ? document.querySelector(href) : null;
+    })
     .filter(Boolean);
 
   if ('IntersectionObserver' in window && sections.length) {
@@ -99,6 +102,52 @@
       }
     });
   }
+
+  /* Share bar: copy link, and the native share sheet where the browser offers one */
+  function fallbackCopy(text) {
+    var area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    try { document.execCommand('copy'); } catch (error) { /* clipboard unavailable */ }
+    document.body.removeChild(area);
+  }
+
+  Array.prototype.slice.call(document.querySelectorAll('.share')).forEach(function (bar) {
+    var url = bar.getAttribute('data-share-url');
+    var title = bar.getAttribute('data-share-title');
+    var copyButton = bar.querySelector('.share-copy');
+    var nativeButton = bar.querySelector('.share-native');
+
+    if (copyButton) {
+      copyButton.addEventListener('click', function () {
+        var done = function () {
+          copyButton.textContent = 'Link copied';
+          copyButton.classList.add('is-done');
+          window.setTimeout(function () {
+            copyButton.textContent = 'Copy link';
+            copyButton.classList.remove('is-done');
+          }, 2200);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(done, function () { fallbackCopy(url); done(); });
+        } else {
+          fallbackCopy(url);
+          done();
+        }
+      });
+    }
+
+    if (nativeButton && navigator.share) {
+      nativeButton.hidden = false;
+      nativeButton.addEventListener('click', function () {
+        navigator.share({ title: title, url: url }).catch(function () { /* user dismissed */ });
+      });
+    }
+  });
 
   /* Footer year */
   var yearEl = document.getElementById('year');

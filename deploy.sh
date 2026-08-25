@@ -1,13 +1,10 @@
 #!/bin/sh
-# Deploy the site to Cloudflare Pages (project: shantived).
-# Only public files go into dist/ — internal notes (CLAUDE.md, README.md),
-# git data, and this script itself must never be served.
+# Build and deploy the site to Cloudflare Pages (project: shantived).
+# build.js assembles dist/ with public files only; internal notes, git data,
+# sources (posts/, templates/) and this script are never uploaded.
 set -eu
 cd "$(dirname "$0")"
 
-rm -rf dist
-mkdir dist
-cp index.html favicon.svg robots.txt sitemap.xml dist/
-cp -R css js assets dist/
-
+[ -d node_modules ] || npm install
+npm run build
 npx -y wrangler pages deploy dist --project-name shantived --branch main --commit-dirty=true
