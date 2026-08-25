@@ -43,6 +43,12 @@ python3 -m http.server 8080 --directory dist
    generates the article's branded preview image into `assets/og/`
    (commit that file), and deploys to Cloudflare Pages.
 
+The build gives CSS, JS, favicons, the logo and preview images a content-hash
+filename (for example `styles.19f17c6e8f.css`) and writes a `_headers` file so
+those files are cached for a year while HTML is always revalidated. A changed
+file therefore always has a new URL; browsers can never pair new HTML with a
+stale stylesheet.
+
 Every article gets its own URL (`/insights/<slug>/`), link-preview
 metadata for WhatsApp, LinkedIn and X, share buttons, an entry in the RSS
 feed (`/feed.xml`) and the sitemap.

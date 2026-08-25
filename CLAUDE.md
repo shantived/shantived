@@ -134,3 +134,11 @@ python3 -m http.server 8080 --directory dist
   logo is effective 24 Nov 2023 with a one-year transition, so the client's
   visiting card still carries the OLD logo; told the user. OG images re-rendered
   (OG_REFRESH=1). Favicons are PNG now; favicon.svg is unused, pending deletion.
+- 2026-08-25 - INCIDENT: after the logo deploy the user saw the live site broken in
+  Safari (giant unstyled logo, old favicon). Cause: new HTML + stale styles.css;
+  the Cloudflare zone applies a 4-hour browser cache TTL to CSS. Fix: build.js now
+  fingerprints css/js/logo/favicons/OG images (content hash in the filename), rewrites
+  every reference, and emits dist/_headers (hashed paths immutable for a year).
+  Verified on the LIVE domain: HTML references styles.<hash>.css, that file contains
+  the logo rules, cache-control immutable, headless render of the live URL correct.
+  Lesson saved to global memory: fingerprint from the first build; verify live, not localhost.

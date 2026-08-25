@@ -8,6 +8,7 @@
  *   /insights/<slug>/        one page per post, with share metadata
  *   /feed.xml                RSS feed
  *   /sitemap.xml             sitemap (also refreshed at the repo root)
+ *   /_headers                Cloudflare Pages cache headers (hashed assets: immutable)
  *   assets/og/<slug>.png     branded Open Graph preview image per post
  *                            (rendered once with a local Chromium browser,
  *                            then committed; skipped when no browser exists;
@@ -19,6 +20,7 @@
  */
 'use strict';
 
+const crypto = require('crypto');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -32,8 +34,20 @@ const DIST = path.join(ROOT, 'dist');
 const POSTS_DIR = path.join(ROOT, 'posts');
 const TEMPLATES = path.join(ROOT, 'templates');
 const OG_DIR = path.join(ROOT, 'assets', 'og');
-const STATIC_FILES = ['index.html', 'robots.txt'];
-const STATIC_DIRS = ['css', 'js', 'assets'];
+const STATIC_FILES = ['robots.txt'];
+const STATIC_DIRS = ['assets/fonts'];
+// Files the HTML references directly. Each is copied to dist/ under a name that
+// contains its content hash, so a changed file always gets a new URL: browsers
+// and CDNs may cache the old URL for hours, and a new HTML with old CSS renders
+// broken. Fonts keep stable names (referenced from CSS; they do not change).
+const FINGERPRINTED = [
+  'css/styles.css',
+  'js/main.js',
+  'assets/logo/ca-india-logo.png',
+  'assets/logo/favicon-32.png',
+  'assets/logo/favicon-180.png',
+  'assets/logo/favicon-192.png',
+];
 const BROWSERS = [
   '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
@@ -72,6 +86,48 @@ function rfc822(iso) {
 
 function readingMinutes(text) {
   return Math.max(1, Math.round(text.trim().split(/\s+/).length / 200));
+}
+
+/* ---------- asset fingerprinting ---------- */
+
+const assetMap = new Map(); // original relative path -> hashed relative path
+
+function fingerprint(relPath) {
+  if (assetMap.has(relPath)) return assetMap.get(relPath);
+  const src = path.join(ROOT, relPath);
+  const hash = crypto.createHash('sha256').update(fs.readFileSync(src)).digest('hex').slice(0, 10);
+  const ext = path.extname(relPath);
+  const hashed = `${relPath.slice(0, -ext.length)}.${hash}${ext}`;
+  fs.mkdirSync(path.dirname(path.join(DIST, hashed)), { recursive: true });
+  fs.copyFileSync(src, path.join(DIST, hashed));
+  assetMap.set(relPath, hashed);
+  return hashed;
+}
+
+// Rewrites every reference to a fingerprinted asset, whether written as
+// "css/styles.css", "/css/styles.css" or "https://site/css/styles.css".
+function applyFingerprints(html) {
+  let out = html;
+  for (const [original, hashed] of assetMap) {
+    for (const quote of ['"', "'"]) {
+      out = out.split(`${quote}${SITE}/${original}`).join(`${quote}${SITE}/${hashed}`);
+      out = out.split(`${quote}/${original}`).join(`${quote}/${hashed}`);
+      out = out.split(`${quote}${original}`).join(`${quote}${hashed}`);
+    }
+  }
+  return out;
+}
+
+function headersFile() {
+  return `# Cloudflare Pages headers. Hashed assets never change under the same URL,
+# so browsers may keep them for a year; HTML is always revalidated.
+/css/*
+  Cache-Control: public, max-age=31536000, immutable
+/js/*
+  Cache-Control: public, max-age=31536000, immutable
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+`;
 }
 
 /* ---------- posts ---------- */
@@ -296,7 +352,8 @@ function build() {
 
   // Default preview image (homepage, insights index, posts without their own).
   ensureOgImage('default', 'Clarity in numbers. Integrity in practice.', 'Chartered Accountants · Jaipur', browser, ogTemplate, warnings);
-  const defaultOg = `${SITE}/assets/og/default.png`;
+  const defaultOg = `${SITE}/${fingerprint('assets/og/default.png')}`;
+  for (const relPath of FINGERPRINTED) fingerprint(relPath);
 
   const header = readTemplate('header.html');
   const footer = render(readTemplate('footer.html'), { year });
@@ -305,7 +362,7 @@ function build() {
   const postTemplate = readTemplate('post.html');
   for (const post of posts) {
     const hasOwnImage = ensureOgImage(post.slug, post.title, 'Insights', browser, ogTemplate, warnings);
-    const ogImage = hasOwnImage ? `${SITE}/assets/og/${post.slug}.png` : defaultOg;
+    const ogImage = hasOwnImage ? `${SITE}/${fingerprint(`assets/og/${post.slug}.png`)}` : defaultOg;
     const html = render(postTemplate, {
       title: post.title,
       description: post.description,
@@ -325,7 +382,7 @@ function build() {
     });
     const dir = path.join(DIST, 'insights', post.slug);
     fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(path.join(dir, 'index.html'), html);
+    fs.writeFileSync(path.join(dir, 'index.html'), applyFingerprints(html));
   }
 
   // Insights index.
@@ -333,16 +390,14 @@ function build() {
     ? posts.map(cardHtml).join('\n')
     : '          <p class="insights-empty">Articles are on their way. Please check back soon.</p>';
   fs.mkdirSync(path.join(DIST, 'insights'), { recursive: true });
-  fs.writeFileSync(path.join(DIST, 'insights', 'index.html'), render(readTemplate('insights.html'), {
+  fs.writeFileSync(path.join(DIST, 'insights', 'index.html'), applyFingerprints(render(readTemplate('insights.html'), {
     url: `${SITE}/insights/`, ogImage: defaultOg, cards, header, footer,
-  }));
+  })));
 
   // Static files and directories (assets/ includes the generated OG images).
   for (const dir of STATIC_DIRS) fs.cpSync(path.join(ROOT, dir), path.join(DIST, dir), { recursive: true });
-  for (const file of STATIC_FILES) {
-    if (file === 'index.html') continue;
-    fs.copyFileSync(path.join(ROOT, file), path.join(DIST, file));
-  }
+  for (const file of STATIC_FILES) fs.copyFileSync(path.join(ROOT, file), path.join(DIST, file));
+  fs.writeFileSync(path.join(DIST, '_headers'), headersFile());
 
   // Homepage: inject the latest posts between the build markers.
   const markerStart = '<!-- build:latest-insights -->';
@@ -355,7 +410,7 @@ function build() {
     ? render(readTemplate('home-insights.html'), { cards: posts.slice(0, 3).map(cardHtml).join('\n') })
     : '';
   home = home.slice(0, start) + latest + home.slice(end + markerEnd.length);
-  fs.writeFileSync(path.join(DIST, 'index.html'), home);
+  fs.writeFileSync(path.join(DIST, 'index.html'), applyFingerprints(home));
 
   // Feeds.
   fs.writeFileSync(path.join(DIST, 'feed.xml'), feedXml(posts));
@@ -364,6 +419,7 @@ function build() {
   fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), sitemap);
 
   console.log(`Built ${posts.length} post(s) into ${path.relative(ROOT, DIST)}/`);
+  for (const [original, hashed] of assetMap) console.log(`  ${original} -> ${hashed}`);
   for (const p of posts) console.log(`  ${p.date}  ${p.path}`);
   for (const w of warnings) console.warn(`Warning: ${w}`);
 }
